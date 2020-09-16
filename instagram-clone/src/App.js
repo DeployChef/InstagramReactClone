@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Post from './Post';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
 
       <h1>Hello World 🚀🚀🚀</h1>
 
-
+      <Post></Post>
       {/* Header */}
 
       {/* Posts */}
