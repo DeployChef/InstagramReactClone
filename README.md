@@ -1,1 +1,1 @@
-# Instagram_React_Clone
+# Instagram React Clone
