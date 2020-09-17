@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Post from './Post';
-import { db } from './firebase'
+import { auth, db } from './firebase'
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button, Input } from '@material-ui/core';
@@ -38,6 +38,7 @@ function App() {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     db.collection('posts').onSnapshot(snapshot => {
@@ -48,9 +49,34 @@ function App() {
     })
   }, [])
 
-  const signUp = (event) => {
+  useEffect(() => {
+    auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        console.log(authUser);
+        setUser(authUser);
 
+        if (authUser.displayName) {
+          //dont update username
+        } else {
+          return authUser.updateProfile({
+            displayName: username
+          });
+        }
+
+      } else {
+        setUser(null);
+      }
+    })
+  }, [user, username])
+
+
+  const signUp = (event) => {
+    event.preventDefault();
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .catch((error) => alert(error.message))
   }
+
 
 
   return (
@@ -71,7 +97,7 @@ function App() {
             <Input
               placeholder="username"
               type="text"
-              value={email}
+              value={username}
               onChange={(e) => setUsername(e.target.value)} />
 
             <Input
@@ -83,7 +109,7 @@ function App() {
             <Input
               placeholder="password"
               type="text"
-              value={email}
+              value={password}
               onChange={(e) => setPassword(e.target.value)} />
 
             <Button onClick={signUp}>Sign Up</Button>
