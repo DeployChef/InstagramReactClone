@@ -35,6 +35,7 @@ function App() {
   const [modalStyle] = useState(getModalStyle);
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [openSignIn, setOpenSignIn] = useState(false);
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -50,7 +51,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    auth.onAuthStateChanged((authUser) => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         console.log(authUser);
         setUser(authUser);
@@ -67,13 +68,38 @@ function App() {
         setUser(null);
       }
     })
+
+    return () => {
+      //cleanup
+      unsubscribe();
+    }
   }, [user, username])
 
 
   const signUp = (event) => {
     event.preventDefault();
 
-    auth.createUserWithEmailAndPassword(email, password)
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        authUser.user.updateProfile({
+          displayName: username
+        })
+
+        setOpen(false);
+      })
+      .catch((error) => alert(error.message))
+  }
+  
+
+  const signIn = (event) => {
+    event.preventDefault();
+
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        setOpenSignIn(false);
+      })
       .catch((error) => alert(error.message))
   }
 
@@ -108,11 +134,40 @@ function App() {
 
             <Input
               placeholder="password"
-              type="text"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)} />
 
             <Button onClick={signUp}>Sign Up</Button>
+          </form>
+        </div>
+      </Modal>
+
+      <Modal
+        open={openSignIn}
+        onClose={() => setOpenSignIn(false)}
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <form className="app__signup">
+            <center>
+              <img alt="InstagramClone"
+                class="app__headerImage"
+                src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" />
+            </center>
+
+            <Input
+              placeholder="email"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} />
+
+            <Input
+              placeholder="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} />
+
+            <Button onClick={signIn}>Sign In</Button>
           </form>
         </div>
       </Modal>
@@ -123,7 +178,18 @@ function App() {
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png" />
       </div>
 
-      <Button onClick={() => setOpen(true)}>Sign Up</Button>
+      {
+        user ? (
+          <Button onClick={() => auth.signOut()}>Logout</Button>
+        ) : (
+          <div>
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+            <Button onClick={() => setOpen(true)}>Sign Up</Button>
+            </div>
+          )
+      }
+
+
 
       <h1>Hello World 🚀🚀🚀</h1>
 
