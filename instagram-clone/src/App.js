@@ -183,7 +183,7 @@ function App() {
           user ? (
             <Button onClick={() => auth.signOut()}>Logout</Button>
           ) : (
-              <div>
+              <div className="app__loginContainer">
                 <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
                 <Button onClick={() => setOpen(true)}>Sign Up</Button>
               </div>
@@ -191,14 +191,14 @@ function App() {
         }
       </div>
 
-      <h1>Hello World 🚀🚀🚀</h1>
-
+      <div className="app__posts">
       {
         posts.map(({ id, post }) => (
           <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
         ))
       }
-
+      </div>
+    
       {user?.displayName ? (
         <ImageUpload username={user.displayName} />
       ) : (

@@ -25,4 +25,8 @@
   flex-direction: column;
 }
 
+.app__posts{
+  padding: 20px;
+}
+
 /*1h 43m*/
