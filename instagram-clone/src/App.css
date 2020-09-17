@@ -7,7 +7,7 @@
   height: 100vh;
 }
 
-.app__header{
+.app__header {
   background-color: white;
   padding: 20px;
   border-bottom: 1px solid lightgray;
@@ -16,13 +16,13 @@
   justify-content: space-between;
 }
 
-.app__headerImage{
+.app__headerImage {
   object-fit: contain;
 }
 
-.app__signup{
+.app__signup {
   display: flex;
   flex-direction: column;
-} 
+}
 
 /*1h 43m*/
